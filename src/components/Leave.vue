@@ -18,7 +18,16 @@ div
         div(class='card-header text-center d-flex justify-content-between')
           span All leave
           span(class='cursor-pointer' v-on:click.prevent='addLeave()' v-b-tooltip title='Request leave') ➕
-
+        div(class='overview')
+          div(v-for="type in leaveTypes()")
+            div
+              span You have planned&nbsp
+                span(class='hours approved') {{ totalLeaveTaken(type)[0]}}
+                span(class='hours') &nbsp/&nbsp
+                span(class='hours pending') {{ totalLeaveTaken(type)[1]}}
+                span(class='hours') &nbsp/&nbsp
+                span(class='hours') {{ totalLeaveTaken(type)[2]}}
+              span &nbsphours of {{type}}.
         div(v-if='leave && leave.length' class='pt-2')
           nav(class='nav nav-tabs')
             a(
@@ -97,6 +106,40 @@ export default {
       this.filterYear = year
     },
 
+    leaveTypes: function () {
+      let leaves = this.filteredLeave
+      let types = []
+      leaves.forEach(leave => {
+        types.push(leave.leave_type.display_label)
+      })
+
+      return [...new Set(types)]
+    },
+
+    totalLeaveTaken: function (type) {
+      let leaves = this.filteredLeave
+      let approved = 0
+      let pending = 0
+      let total
+      leaves.forEach(leave => {
+        console.log(leave)
+        if (leave.leave_type.display_label === type) {
+          leave.leavedate_set.forEach(lv =>{
+            if (leave.status === "approved") {
+              approved += (moment.duration(moment(lv.ends_at).diff(lv.starts_at)))/1000/60
+            }
+            else if (leave.status === "pending") {
+              pending += (moment.duration(moment(lv.ends_at).diff(lv.starts_at)))/1000/60
+            }
+          })
+        }
+      })
+      approved = (approved / 60)
+      pending = (pending / 60)
+      total = (approved + pending)
+      return [approved.toFixed(2), pending.toFixed(2), total.toFixed(2)]
+    },
+
     reloadData: function() {
       let now = moment()
 
@@ -149,4 +192,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.overview {
+  padding: 0.2rem;
+}
+.hours {
+  font-weight: bold;
+  &.approved {
+    color: green;
+  }
+  &.pending {
+    color: orange;
+  }
+}
 </style>
