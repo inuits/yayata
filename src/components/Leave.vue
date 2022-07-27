@@ -1,68 +1,67 @@
 <template lang="pug">
-div
-  b-modal(ref='leaveModal' hide-header=true hide-footer=true lazy=true size='lg')
-    LeaveWidget(
-      :leave='selectedLeave'
-      v-on:success='onLeaveModified()'
-    )
+  div
+    b-modal(ref='leaveModal' hide-header=true hide-footer=true lazy=true size='lg')
+      LeaveWidget(
+        :leave='selectedLeave'
+        v-on:success='onLeaveModified()'
+      )
 
-  b-modal(ref='attachmentModal' hide-header=true hide-footer=true lazy=true size='lg')
-    AttachmentWidget(
-      :leave='selectedLeave'
-      v-on:success='onAttachmentModified()'
-    )
+    b-modal(ref='attachmentModal' hide-header=true hide-footer=true lazy=true size='lg')
+      AttachmentWidget(
+        :leave='selectedLeave'
+        v-on:success='onAttachmentModified()'
+      )
 
-  div(class='row')
-    div(class='col-md-6')
-      div(class='card card-top-blue mb-3')
-        div(class='card-header text-center d-flex justify-content-between')
-          span All leave
-          span(class='cursor-pointer' v-on:click.prevent='addLeave()' v-b-tooltip title='Request leave') ➕
-        div(class='overview')
-          div(v-for="type in leaveTypes()")
-            div
-              span You have planned&nbsp
-                span(class='hours approved') {{ totalLeaveTaken(type)[0]}}
-                span(class='hours') &nbsp/&nbsp
-                span(class='hours pending') {{ totalLeaveTaken(type)[1]}}
-                span(class='hours') &nbsp/&nbsp
-                span(class='hours') {{ totalLeaveTaken(type)[2]}}
-              span &nbsphours of {{type}}.
-        div(v-if='leave && leave.length' class='pt-2')
-          nav(class='nav nav-tabs')
-            a(
-              v-for='year in years'
-              v-on:click.prevent='filterByYear(year)'
-              class='nav-link nav-item'
-              v-bind:class='{"active": year == filterYear}'
-              href='#'
-            ) {{ year }}
+    div(class='row')
+      div(class='col-md-6')
+        div(class='card card-top-blue mb-3')
+          div(class='card-header text-center d-flex justify-content-between')
+            span All leave
+            span(class='cursor-pointer' v-on:click.prevent='addLeave()' v-b-tooltip title='Request leave') ➕
+          div(class='overview')
+            div(v-for="type in leaveTypes()")
+              div
+                span You have planned&nbsp
+                  span(class='hours approved') {{ totalLeaveTaken(type)[0]}}
+                  span(class='hours') &nbsp/&nbsp
+                  span(class='hours pending') {{ totalLeaveTaken(type)[1]}}
+                  span(class='hours') &nbsp/&nbsp
+                  span(class='hours') {{ totalLeaveTaken(type)[2]}}
+                span &nbsphours of {{type}}.
+          div(v-if='leave && leave.length' class='pt-2')
+            nav(class='nav nav-tabs')
+              a(
+                v-for='year in years'
+                v-on:click.prevent='filterByYear(year)'
+                class='nav-link nav-item'
+                v-bind:class='{"active": year == filterYear}'
+                href='#'
+              ) {{ year }}
 
-          div(class='list-group list-group-flush')
-            li(class='list-group-item list-group-item-action cursor-pointer p-2' v-for='leave in filteredLeave' v-on:click.prevent='leave.status == "pending" ? editLeave(leave) : null')
-              div(class='d-flex justify-content-between')
-                div {{ leave.leave_type.display_label }}
-                div
-                  span(class='badge' v-bind:class='{"bg-danger": leave.status == "rejected", "bg-warning": leave.status == "pending", "bg-success": leave.status == "approved"}') {{ leave.status }}
-              div(class='d-flex justify-content-between')
-                div
-                  div(v-for='leave_date in leave.leavedate_set' class='text-muted')
-                    small {{ leave_date.starts_at | moment('YYYY-MM-DD, HH:mm') }} - {{ leave_date.ends_at | moment('HH:mm') }}
-                  div(v-if='leave.description' class='text-muted')
-                    small {{ leave.description }}
-                div
-                  span(class='cursor-pointer' v-b-tooltip title='Attachments' v-on:click.stop='editAttachment(leave)')
-                    small(v-if='leave.attachments.length') {{ leave.attachments.length }}
-                    | 📎
-        div(class='card-body' v-else)
-          | You have requested no leave as of today. Only robots never take a break!
+            div(class='list-group list-group-flush')
+              li(class='list-group-item list-group-item-action cursor-pointer p-2' v-for='leave in filteredLeave' v-on:click.prevent='leave.status == "pending" ? editLeave(leave) : null')
+                div(class='d-flex justify-content-between')
+                  div {{ leave.leave_type.display_label }}
+                  div
+                    span(class='badge' v-bind:class='{"bg-danger": leave.status == "rejected", "bg-warning": leave.status == "pending", "bg-success": leave.status == "approved"}') {{ leave.status }}
+                div(class='d-flex justify-content-between')
+                  div
+                    div(v-for='leave_date in leave.leavedate_set' class='text-muted')
+                      small {{ leave_date.starts_at | moment('YYYY-MM-DD, HH:mm') }} - {{ leave_date.ends_at | moment('HH:mm') }}
+                    div(v-if='leave.description' class='text-muted')
+                      small {{ leave.description }}
+                  div
+                    span(class='cursor-pointer' v-b-tooltip title='Attachments' v-on:click.stop='editAttachment(leave)')
+                      small(v-if='leave.attachments.length') {{ leave.attachments.length }}
+                      | 📎
+          div(class='card-body' v-else)
+            | You have requested no leave as of today. Only robots never take a break!
 </template>
 
 <script>
 import * as types from '../store/mutation-types';
 import store from '../store';
 import moment from 'moment-timezone';
-import toastr from 'toastr';
 import LeaveWidget from './widgets/LeaveWidget.vue';
 import AttachmentWidget from './widgets/AttachmentWidget.vue';
 
@@ -122,14 +121,12 @@ export default {
       let pending = 0
       let total
       leaves.forEach(leave => {
-        console.log(leave)
         if (leave.leave_type.display_label === type) {
-          leave.leavedate_set.forEach(lv =>{
+          leave.leavedate_set.forEach(lv => {
             if (leave.status === "approved") {
-              approved += (moment.duration(moment(lv.ends_at).diff(lv.starts_at)))/1000/60
-            }
-            else if (leave.status === "pending") {
-              pending += (moment.duration(moment(lv.ends_at).diff(lv.starts_at)))/1000/60
+              approved += (moment.duration(moment(lv.ends_at).diff(lv.starts_at))) / 1000 / 60
+            } else if (leave.status === "pending") {
+              pending += (moment.duration(moment(lv.ends_at).diff(lv.starts_at))) / 1000 / 60
             }
           })
         }
@@ -195,11 +192,14 @@ export default {
 .overview {
   padding: 0.2rem;
 }
+
 .hours {
   font-weight: bold;
+
   &.approved {
     color: green;
   }
+
   &.pending {
     color: orange;
   }
