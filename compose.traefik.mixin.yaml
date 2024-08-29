@@ -1,0 +1,15 @@
+services:
+
+  yayata:
+    networks:
+      traefik:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME?}-yayata.rule=Host(`yayata.${PROJECT_DOMAIN_SUFFIX?}`)"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME?}-yayata.loadbalancer.server.port=8080"
+
+networks:
+
+  traefik:
+    external: true

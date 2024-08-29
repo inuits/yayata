@@ -1,0 +1,64 @@
+version: '3'
+
+env:
+  COMPOSE: docker compose
+
+dotenv: ['.env'] # first file takes precedence
+
+tasks:
+  default:
+    cmds:
+      - "'{{.TASK_EXE}}' --list"
+
+  .env:
+    desc: Initiate the .env file
+    cmds:
+      - cp "{{.TASK}}.dist" "{{.TASK}}"
+    generates:
+      - "{{.TASK}}"
+    status:
+      - test -f "{{.TASK}}"
+    silent: true
+
+  prepare:
+    desc: Prepare your setup
+    deps: [.env]
+
+  build:
+    desc: Build your services
+    deps: [prepare]
+    cmds:
+      - |
+        {{.COMPOSE}} build --no-cache
+
+  start:
+    desc: Start all services
+    deps: [prepare]
+    cmds:
+      - |
+        {{.COMPOSE}} up --detach --remove-orphans {{.CLI_ARGS}}
+
+  stop:
+    desc: Stop all services
+    deps: [prepare]
+    cmds:
+      - |
+        {{.COMPOSE}} down {{.CLI_ARGS}}
+
+  compose:service:*:exec:*:
+    desc: Open a terminal inside a service
+    deps: [prepare]
+    vars:
+      SERVICE: '{{index .MATCH 0}}'
+      COMMAND: '{{index .MATCH 1 | default "sh"}}'
+    cmds:
+      - |
+        {{.COMPOSE}} exec --interactive --tty "{{.SERVICE}}" {{.COMMAND}} && exit 0
+
+  clean:
+    desc: Clean up
+    deps: [prepare]
+    cmds:
+      - |
+        {{.COMPOSE}} down --remove-orphans --volumes {{.CLI_ARGS}}
+      - rm -f .env
