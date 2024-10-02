@@ -1,0 +1,20 @@
+services:
+
+  yayata:
+    command: |
+      sh -c "
+        npm install
+        echo '{\"oauth2\":{\"config\":{\"baseUrl\":\"${API_APPLICATION_BASE_URL?}\",\"clientId\":\"${API_APPLICATION_CLIENT_ID?}\"}}}' > /code/src/static/cfg/config.json
+        npm run dev -- --host 0.0.0.0
+      "
+    volumes:
+      - yayata-files:/code
+
+volumes:
+
+  yayata-files:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ${PWD?}

@@ -5,10 +5,10 @@ YAYATA
 [![GitHub issues](https://img.shields.io/github/issues/kalmanolah/yayata.svg)](https://shields.io)
 [![License](https://img.shields.io/github/license/kalmanolah/yayata.svg)](https://shields.io)
 
-![yayata](https://cdn.rawgit.com/kalmanolah/yayata/master/src/assets/img/logo_text.svg)
+![yayata](https://cdn.rawgit.com/inuits/yayata/master/src/assets/img/logo_text.svg)
 
 Yet Another Timesheet Application... Yet Again. This is a frontend for
-[ninetofiver](https://github.com/kalmanolah/925r).
+[ninetofiver](https://github.com/inuits/925r).
 
 ## Configuration
 
