@@ -53,7 +53,7 @@ export default {
         }).then(() => {
           this.$router.push({ name: 'home' })
         }, (error) => {
-          this.errorMessage = error.data.error_description || error.data.error || "Login was now successful. Try again, please."
+          this.errorMessage = error.data.error_description || error.data.error || "Login was not successful. Try again, please."
         })
       }
     }
