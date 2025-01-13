@@ -84,12 +84,16 @@
             :disabled="loading",
             @click="remove()"
           ) delete
-          button(
-            type='submit',
-            class='btn btn-primary-soft text-primary w-50 w-sm-auto flex-grow-1 flex-sm-grow-0',
-            :disabled="loading",
-            @click="submit()",
-          ) log time
+          div(
+            v-b-tooltip="{disabled:!disabledSave}"
+            :title="disabledSave ? 'Manual entry for selected contract is not allowed. Import hours from Redmine instead.' : ''"
+          )
+            button(
+              type='submit',
+              class='btn btn-primary-soft text-primary w-50 w-sm-auto flex-grow-1 flex-sm-grow-0',
+              :disabled="loading || disabledSave",
+              @click="submit()",
+            ) log time
 
 </template>
 
@@ -123,6 +127,16 @@ export default {
   }),
 
   computed: {
+    performanceContract() {
+      if (!store.getters.contracts) return null;
+
+      return store.getters.contracts?.find((contract) => contract.id === this.model.contract?.id) ?? null;
+    },
+
+    disabledSave() {
+      return this.performanceContract?.external_only;
+    },
+
     descriptionLength() {
       return this.model.description?.length ?? 0;
     },
@@ -301,6 +315,11 @@ export default {
     },
 
     validate: function () {
+      if (this.disabledSave) {
+        toastr.error("Manual entry for selected contract is not allowed. Import hours from Redmine instead.");
+        return false;
+      }
+
       if (isNull(this.model.contract)) {
         toastr.error("Contract is required.");
         return false;
