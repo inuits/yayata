@@ -80,7 +80,6 @@ const chartShades = computed(() => {
 
   return new Values(primaryColor).tints(100 / (count + 1)).reverse().slice(1);
 });
-console.log(remainingHours);
 const chartCompleteData = computed(() => ({
   labels: [
     ...(performances.value.map(performance => performance.contract.display_label) || []),
