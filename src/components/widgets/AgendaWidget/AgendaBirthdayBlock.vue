@@ -1,5 +1,7 @@
 <script setup>
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {faGift} from "@fortawesome/free-solid-svg-icons";
+import {faBirthdayCake} from "@fortawesome/free-solid-svg-icons";
 </script>
 
 <template lang="pug">
@@ -20,6 +22,8 @@ import {faGift} from "@fortawesome/free-solid-svg-icons";
             template(slot="info")
               p(class="text-muted m-0")
                 | {{ getUserBirthdayString(user) }}
+            template(slot="icon")
+              FontAwesomeIcon(v-if="todayBirthdaysUsers.includes(user)" :icon='faBirthdayCake' :class="`text-success-soft`" size="3x")
 </template>
 
 <script>
@@ -40,7 +44,12 @@ export default {
       const alreadyHadBirthday = birthday.clone().set({
         year: moment().year()
       }).isBefore(moment());
+      const hasBirthdayToday = birthday.date() === moment().date() && birthday.month() === moment().month();
       const nextAge = moment().diff(birthday, 'years') + (alreadyHadBirthday ? 0 : 1);
+
+      if (hasBirthdayToday) {
+        return `Is ${nextAge} today! 🎉`
+      }
 
       return `${alreadyHadBirthday ? 'Turned' : 'Turns'} ${nextAge} on ${birthday.format('MMMM Do')}`;
     },
@@ -64,6 +73,15 @@ export default {
             })
       }
     },
+    todayBirthdaysUsers: function() {
+      return this.birthdayUsers?.filter(user => {
+        if (!user.userinfo?.birth_date) return false
+
+        const birthday = moment(user.userinfo.birth_date, 'YYYY-MM-DD')
+
+        return birthday.month() === moment().month() && birthday.date() === moment().date()
+      })
+    }
   }
 }
 </script>
