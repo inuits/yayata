@@ -3,7 +3,7 @@ import {faCalendarDay} from "@fortawesome/free-solid-svg-icons";
 </script>
 
 <template lang="pug">
-  div(class='col flex-grow-1 flex-xl-grow-0')
+  div(class='col flex-grow-1')
     AgendaBlock(
       class="d-flex flex-column overflow-hidden"
       color="primary-soft"

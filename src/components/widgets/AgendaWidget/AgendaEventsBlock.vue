@@ -187,7 +187,7 @@ export default {
   & > .live {
     $size: 0.5rem;
     position: absolute;
-    top: calc(0.5rem - calc($size / 4));
+    top: calc(0.5rem + calc($size / 2));
     left: calc(-8px - $size);
     width: $size;
     height: $size;
