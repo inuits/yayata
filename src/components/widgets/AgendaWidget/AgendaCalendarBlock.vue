@@ -22,6 +22,8 @@ import {faCalendarDay} from "@fortawesome/free-solid-svg-icons";
         p {{ dayOfTheMonth }}
         p {{ shortMonth }}
 
+        div(class="flex-grow-1")
+
         hr(v-if="quote")
 
         div(class="quote" v-if="quote")
@@ -131,7 +133,6 @@ export default {
   & > .quote {
     width: 100%;
     display: flex;
-    flex-grow: 1;
     padding: 12px 5%;
     align-items: flex-end;
     justify-content: flex-end;
@@ -159,13 +160,5 @@ export default {
       }
     }
   }
-
-  //&::after {
-  //  content: '';
-  //  width: 100%;
-  //  height: 12px;
-  //  margin-top: 12px;
-  //  background: rgba(0, 0, 0, 0.32);
-  //}
 }
 </style>
