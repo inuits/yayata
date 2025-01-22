@@ -44,14 +44,18 @@
               b-form-select-option(:value='null' disabled)
                 | < Nothing selected >
 
-      div(class='form-group mb-2')
+      div(
+        class='form-group mb-2'
+        v-b-tooltip="{disabled:!disabledSave}"
+        :title="disabledSave ? 'Manual entry for selected contract is not allowed. Import hours from Redmine instead.' : ''"
+      )
         label(for='description') Description
         textarea(
           v-model="model.description",
           class='form-control',
           id='description',
           rows='3',
-          :disabled="loading",
+          :disabled="loading || disabledSave",
           maxlength='2048',
         )
         small(class='form-text text-muted text-right') {{ descriptionLength }} / 2048
