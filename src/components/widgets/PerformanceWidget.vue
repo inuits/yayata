@@ -44,11 +44,7 @@
               b-form-select-option(:value='null' disabled)
                 | < Nothing selected >
 
-      div(
-        class='form-group mb-2'
-        v-b-tooltip="{disabled:!disabledSave}"
-        :title="disabledSave ? 'Manual entry for selected contract is not allowed. Import hours from Redmine instead.' : ''"
-      )
+      div(class='form-group mb-2')
         label(for='description') Description
         textarea(
           v-model="model.description",
@@ -56,6 +52,7 @@
           id='description',
           rows='3',
           :disabled="loading || disabledSave",
+          :placeholder="disabledSave ? 'Manual entry for selected contract is not allowed. Import hours from Redmine instead.' : ''"
           maxlength='2048',
         )
         small(class='form-text text-muted text-right') {{ descriptionLength }} / 2048
@@ -211,6 +208,13 @@ export default {
                   contract_user.contract.id === this.model.contract.id
           )
           .map((contract_user) => contract_user.contract_role);
+    }
+  },
+
+  watch: {
+    disabledSave(value) {
+      if (value)
+        this.$set(this.model, "description", null);
     }
   },
 
