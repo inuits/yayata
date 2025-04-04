@@ -8,3 +8,5 @@ cypress/videos/
 cypress/screenshots/
 cypress/.Trash-0/
 .idea/
+
+/.env

@@ -176,7 +176,8 @@ module.exports = (env, argv) => {
     },
     devServer: {
       historyApiFallback: true,
-      noInfo: true
+      noInfo: true,
+      disableHostCheck: !isProd
     },
     devtool: isProd ? 'nosources-source-map' : 'eval-source-map'
   }
