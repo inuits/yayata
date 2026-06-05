@@ -41,6 +41,15 @@ import {faHourglassHalf, faHourglassEnd} from "@fortawesome/free-solid-svg-icons
             b-form-select-option(:value='null' disabled)
               | < Nothing selected >
 
+      //- Admin-authored message for the selected leave type 
+      b-alert(
+        v-if='selectedLeaveTypeMessage'
+        variant='info-soft'
+        class='text-info border border-info'
+        show
+      )
+        span(v-html='selectedLeaveTypeMessage')
+
       div(class='d-flex flex-wrap flex-lg-nowrap gx-3 mb-2')
         div(class='form-group m-0 w-50 flex-grow-1 mb-md-2 mb-lg-0')
           label(for='time_from') Time from
@@ -118,6 +127,7 @@ import toastr from 'toastr';
 import * as types from '../../store/mutation-types';
 import store from '../../store';
 import {isDate} from "lodash";
+import {getLeaveTypeById, leaveTypeMessage} from '../../utils/leaveTypes';
 
 export default {
   name: 'LeaveWidget',
@@ -204,6 +214,9 @@ export default {
       if (!store.getters.leave_types) return [];
 
       return store.getters.leave_types
+    },
+    selectedLeaveTypeMessage() {
+      return leaveTypeMessage(getLeaveTypeById(store.getters.leave_types, this.model.leave_type))
     },
     isMultipleDays() {
       return !moment(this.model.timeFrom).isSame(moment(this.model.timeTo), 'day')
