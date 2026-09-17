@@ -123,7 +123,7 @@ export const router = new VueRouter({
         {
           name: 'calendar_week_redirect',
           path: '/calendar/week',
-          redirect: `/calendar/week/${(new Date()).getFullYear()}/${moment().isoWeek()}`,
+          redirect: `/calendar/week/${moment().isoWeekYear()}/${moment().isoWeek()}`,
         },
         {
           name: 'calendar_week',

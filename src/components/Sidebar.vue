@@ -38,7 +38,7 @@ export default {
       format: 'D MMM YYYY',
       onSelect: function() {
         var date = this.getMoment();
-        vm.$router.push({ name: 'calendar_week', params: { year: date.get('year'), week: date.get('isoWeek') }})
+        vm.$router.push({ name: 'calendar_week', params: { year: date.get('isoWeekYear'), week: date.get('isoWeek') }})
       }
     });
 
